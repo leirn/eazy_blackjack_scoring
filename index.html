@@ -1,0 +1,96 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+
+<div id="app">
+
+    <form @submit.prevent="addPlayer">
+        <input v-model="newPlayer">
+        <button>Add player</button>
+    </form>
+
+    <table :class="{center:true}">
+        <thead>
+            <th>Player</th>
+            <th>Score</th>
+        </thead>
+        <tr v-for="player in players" :key="player.id">
+            <td :class="{td:true}">{{ player.name }}</td>
+            <td :class="{td:true, negative: player.score < 0}">{{ player.score }}</td>
+            <td :class="{td:true}">
+                <button class="btn btn-primary btn-lg btn-primary" @click="addScore(player.id, 10)">
+                    Win !
+                </button>
+            </td>
+            <td :class="{td:true}">
+                <button class="btn btn-primary btn-lg btn-warning" @click="addScore(player.id, -10)">
+                    Loss !
+                </button>
+            </td>
+            <td :class="{td:true}">
+                <button class="btn btn-primary btn-lg btn-success" @click="addScore(player.id, 15)">
+                    Black jack !
+                </button>
+            </td>
+            <td :class="{td:true}">
+                <button class="btn btn-primary btn-lg btn-danger" @click="removePlayer(player)">X</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    let id = 0
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                newPlayer: '',
+                players: [],
+            }
+        },
+        methods: {
+            addPlayer() {
+                this.players.push({ id: id++, name: this.newPlayer, score: 0 })
+                this.newPlayer = ''
+            },
+            addScore(player, score) {
+                for (i = 0; i < this.players.length; i++) {
+                    if (this.players[i].id === player) {
+                        this.players[i].score += score;
+                        return;
+                    }
+                }
+            },
+            removePlayer(player) {
+                this.players = this.players.filter((t) => t !== player)
+            }
+        }
+    }).mount('#app')
+</script>
+
+<style>
+    @import './css/argon-design-system.css?v=1.2.2';
+    @import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700';
+    @import 'https://use.fontawesome.com/releases/v5.0.6/css/all.css';
+
+    .negative {
+        color: red;
+    }
+
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        font-size: x-large;
+    }
+
+    .td {
+        text-align: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+</style>
